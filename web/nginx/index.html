@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="ko">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>120다산 콜센터 챗봇</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+
+        <style type="text/css">
+            .btn-circle.btn-xl {
+                width: 100px;
+                height: 100px;
+                padding: 13px 18px;
+                border-radius: 60px;
+                background-image: url('./resource/icon_bot.png');
+                background-size: 70% 70%;
+                background-repeat: no-repeat;
+                background-position: center;
+                font-size: 15px;
+                text-align: center;
+            }
+            .navbar-nav{
+                align-content: center;
+            }
+            .navbar-nav .nav-link {
+                font-weight: bold;
+                font-size: 1.5em;
+            }
+            h1, h2, h3, h4, h5{
+              font-weight: bold;
+            }
+        </style>
+        <style>
+          .chat-box {
+    height: 100%;
+    width: 100%;
+    background-color: #fff;
+    overflow: hidden
+}
+
+.chats {
+    padding: 30px 15px
+}
+
+.chat-avatar {
+    float: right
+}
+
+.chat-avatar .avatar {
+    width: 30px;
+        -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2),0 6px 10px 0 rgba(0,0,0,0.3);
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2),0 6px 10px 0 rgba(0,0,0,0.3);
+}
+
+.chat-body {
+    display: block;
+    margin: 10px 30px 0 0;
+    overflow: hidden
+}
+
+.chat-body:first-child {
+    margin-top: 0
+}
+
+.chat-content {
+    position: relative;
+    display: block;
+    float: right;
+    padding: 8px 15px;
+    margin: 0 20px 10px 0;
+    clear: both;
+    color: #fff;
+    background-color: #62a8ea;
+    border-radius: 4px;
+        -webkit-box-shadow: 0 1px 4px 0 rgba(0,0,0,0.37);
+    box-shadow: 0 1px 4px 0 rgba(0,0,0,0.37);
+}
+
+.chat-content:before {
+    position: absolute;
+    top: 10px;
+    right: -10px;
+    width: 0;
+    height: 0;
+    content: '';
+    border: 5px solid transparent;
+    border-left-color: #62a8ea
+}
+
+.chat-content>p:last-child {
+    margin-bottom: 0
+}
+
+.chat-content+.chat-content:before {
+    border-color: transparent
+}
+
+.chat-time {
+    display: block;
+    margin-top: 8px;
+    color: rgba(255, 255, 255, .6)
+}
+
+.chat-left .chat-avatar {
+    float: left
+}
+
+.chat-left .chat-body {
+    margin-right: 0;
+    margin-left: 30px
+}
+
+.chat-left .chat-content {
+    float: left;
+    margin: 0 0 10px 20px;
+    color: #76838f;
+    background-color: #dfe9ef
+}
+
+.chat-left .chat-content:before {
+    right: auto;
+    left: -10px;
+    border-right-color: #dfe9ef;
+    border-left-color: transparent
+}
+
+.chat-left .chat-content+.chat-content:before {
+    border-color: transparent
+}
+
+.chat-left .chat-time {
+    color: #a3afb7
+}
+.avatar img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border: 0 none;
+    border-radius: 1000px;
+}
+.chat-avatar .avatar {
+    width: 30px;
+}
+.avatar {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    white-space: nowrap;
+    border-radius: 1000px;
+    vertical-align: bottom;
+}
+        </style>
+    </head>
+    <body>
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">다산콜재단 챗봇</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                          <div class="panel" id="chat">
+                            <div class="panel-body" style="overflow-y:scroll; height: 400px;">
+                              <div class="chats">
+                                <div class="chat chat-left">
+                                  <div class="chat-avatar">
+                                    <a class="avatar avatar-online" data-toggle="tooltip" href="#" data-placement="left" title="" data-original-title="챗봇">
+                                      <img src="./resource/icon_bot.png">
+                                      <i></i>
+                                    </a>
+                                  </div>
+                                  <div class="chat-body">
+                                    <div class="chat-content">
+                                      <p>안녕하세요. 120 다산콜재단 챗봇입니다.<br> 편하게 질문해주세요.</p>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control chat-input-text" placeholder="질문을 여기에 입력하세요." aria-label="질문을 여기에 입력하세요." aria-describedby="button-addon2">
+                            <button class="btn btn-outline-secondary chat-send-button" type="button" id="button-addon2">
+                              <span id="ajax-loading-start" style="display:none;"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>&nbsp;응답 대기중</span>
+                              <span id="ajax-loading-end">보내기</span>
+                            </button>                            
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="./resource/logo_dasan.png" alt="다산콜재단">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <a class="nav-link active" aria-current="page" href="#">재단소개</a>
+                        <a class="nav-link" href="#">상담안내</a>
+                        <a class="nav-link" href="#">알림마당</a>
+                        <a class="nav-link" href="#">소통광장</a>
+                        <a class="nav-link" href="#">이용안내</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <main class="container">
+            <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
+              <div class="col-lg-12 px-0">
+                <h1 class="display-4 fst-italic">"서울비전 2030" 안심도시<br>시민소통의 최전선 <big>120</big></h1>
+                <p class="lead my-3">120다산콜재단은 종합적이고 전문적인 서울시 행정 상담 서비스를 제공하기 위해 설립되었습니다.<br>
+                시민과 서울시를 잇는 행정지식정보의 나들목으로서 서울시의 발전에 기여하고 시민의 생활을 더욱 편리하게 만들고자 노력하겠습니다.</p>
+                <p class="lead mb-0"><a href="#" class="text-body-emphasis fw-bold">더보기...</a></p>
+              </div>
+            </div>
+          
+            <div class="row mb-2">
+              <div class="col-md-6">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                  <div class="col p-4 d-flex flex-column position-static">
+                    <strong class="d-inline-block mb-2 text-primary-emphasis">인삿말</strong>
+                    <h3 class="mb-0">이이재</h3>
+                    <div class="mb-1 text-body-secondary">120다산콜재단 이사장</div>
+                    <p class="card-text mb-auto">안녕하십니까,
+                      서울특별시 120다산콜재단 이사장 이이재입니다.</p>
+                    <a href="#" class="icon-link gap-1 icon-link-hover stretched-link">
+                      더보기...
+                      <svg class="bi"><use xlink:href="#chevron-right"></use></svg>
+                    </a>
+                  </div>
+                  <div class="col-auto d-none d-lg-block">
+                    <img class="bd-placeholder-img" width="200" height="250" src="./resource/img_mayor.jpeg">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                  <div class="col p-4 d-flex flex-column position-static">
+                    <strong class="d-inline-block mb-2 text-success-emphasis">재단소식</strong>
+                    <h3 class="mb-0">『공감 이음 워크숍』 개최</h3>
+                    <div class="mb-1 text-body-secondary">Nov 11</div>
+                    <p class="mb-auto">상담정보 현행화를 위한 공감 이음 워크숍을 개최했습니다.</p>
+                    <a href="#" class="icon-link gap-1 icon-link-hover stretched-link">
+                      더보기...
+                      <svg class="bi"><use xlink:href="#chevron-right"></use></svg>
+                    </a>
+                  </div>
+                  <div class="col-auto d-none d-lg-block">
+                    <img class="bd-placeholder-img" width="200" height="250" src="./resource/img_workshop.jpeg">
+                  </div>
+                </div>
+              </div>
+            </div>
+          
+            <div class="row g-5">
+              <div class="col-md-8">
+                <h3 class="pb-4 mb-4 fst-italic border-bottom">
+                  재단 소개
+                </h3>
+          
+                <article class="blog-post">
+                  <h2>시민에 대한 약속</h2>
+                  <p>120다산콜재단은 종합적이고 전문적인 서울시 행정 상담을 통해 시민 중심 소통행정을 실현하고자 다음과 같이 최선을 다하겠습니다.</p>
+                  <ul>
+                    <li><b>첫째,</b> 시민의 궁금증과 어려움을 해결할 수 있도록 적극적으로 노력하겠습니다.</li>
+                    <li><b>둘째,</b> 서울시 행정 상담 전문 기관으로서 정확하고 깊이 있는 정보를 제공하겠습니다.</li>
+                    <li><b>셋째,</b> 시민의 의견을 존중하여 더 나은 서비스를 제공하겠습니다.</li>
+                    <li><b>넷째,</b> 공공기관으로서 사회적 책임을 다하겠습니다.</li>
+                  </ul>
+                  <hr>
+                  <h2>120다산콜재단 윤리경영 실천 서약</h2>
+                  <p>120다산콜재단의 임직원은 투명하고 공정하게 업무를 수행하여 윤리경영 구현에 이바지하기 위해 다음과 같은 사항을 준수하겠습니다.</p>
+                  <ul>
+                    <li><b>첫째,</b> 직무 수행과 관련하여 어떠한 경우에도 금품이나 향응 등의 편의를 제공받지 않겠습니다.</li>
+                    <li><b>둘째,</b> 공공기관에 근무하는 직원으로서 건전한 사생활을 유지하겠습니다.</li>
+                    <li><b>셋째,</b> 부패 방지와 척결에 항상 솔선수범하겠습니다.</li>
+                    <li><b>넷째,</b> 모든 업무는 주어진 기준과 절차에 따라 투명하게 처리하겠습니다.</li>
+                    <li><b>다섯째,</b> 윤리경영 구현을 위해 임직원 행동강령을 숙지하고 철저히 준수하겠습니다.</li>
+                  </ul>
+                  <hr>
+                  <h2>Blockquotes</h2>
+                  <p>This is an example blockquote in action:</p>
+                  <blockquote class="blockquote">
+                    <p>Quoted text goes here.</p>
+                  </blockquote>
+                  <p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
+                  <h3>Example lists</h3>
+                  <p>This is some additional paragraph placeholder content. It's a slightly shorter version of the other highly repetitive body text used throughout. This is an example unordered list:</p>
+                  <ul>
+                    <li>First list item</li>
+                    <li>Second list item with a longer description</li>
+                    <li>Third list item to close it out</li>
+                  </ul>
+                  <p>And this is an ordered list:</p>
+                  <ol>
+                    <li>First list item</li>
+                    <li>Second list item with a longer description</li>
+                    <li>Third list item to close it out</li>
+                  </ol>
+                  <p>And this is a definition list:</p>
+                  <dl>
+                    <dt>HyperText Markup Language (HTML)</dt>
+                    <dd>The language used to describe and define the content of a Web page</dd>
+                    <dt>Cascading Style Sheets (CSS)</dt>
+                    <dd>Used to describe the appearance of Web content</dd>
+                    <dt>JavaScript (JS)</dt>
+                    <dd>The programming language used to build advanced Web sites and applications</dd>
+                  </dl>
+                  <h2>Inline HTML elements</h2>
+                  <p>HTML defines a long list of available inline tags, a complete list of which can be found on the <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element">Mozilla Developer Network</a>.</p>
+                  <ul>
+                    <li><strong>To bold text</strong>, use <code class="language-plaintext highlighter-rouge">&lt;strong&gt;</code>.</li>
+                    <li><em>To italicize text</em>, use <code class="language-plaintext highlighter-rouge">&lt;em&gt;</code>.</li>
+                    <li>Abbreviations, like <abbr title="HyperText Markup Language">HTML</abbr> should use <code class="language-plaintext highlighter-rouge">&lt;abbr&gt;</code>, with an optional <code class="language-plaintext highlighter-rouge">title</code> attribute for the full phrase.</li>
+                    <li>Citations, like <cite>— Mark Otto</cite>, should use <code class="language-plaintext highlighter-rouge">&lt;cite&gt;</code>.</li>
+                    <li><del>Deleted</del> text should use <code class="language-plaintext highlighter-rouge">&lt;del&gt;</code> and <ins>inserted</ins> text should use <code class="language-plaintext highlighter-rouge">&lt;ins&gt;</code>.</li>
+                    <li>Superscript <sup>text</sup> uses <code class="language-plaintext highlighter-rouge">&lt;sup&gt;</code> and subscript <sub>text</sub> uses <code class="language-plaintext highlighter-rouge">&lt;sub&gt;</code>.</li>
+                  </ul>
+                  <p>Most of these elements are styled by browsers with few modifications on our part.</p>
+                  <h2>Heading</h2>
+                  <p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
+                  <h3>Sub-heading</h3>
+                  <p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
+                  <pre><code>Example code block</code></pre>
+                  <p>This is some additional paragraph placeholder content. It's a slightly shorter version of the other highly repetitive body text used throughout.</p>
+                </article>
+          
+                <article class="blog-post">
+                  <h2 class="display-5 link-body-emphasis mb-1">Another blog post</h2>
+                  <p class="blog-post-meta">December 23, 2020 by <a href="#">Jacob</a></p>
+          
+                  <p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
+                  <blockquote>
+                    <p>Longer quote goes here, maybe with some <strong>emphasized text</strong> in the middle of it.</p>
+                  </blockquote>
+                  <p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
+                  <h3>Example table</h3>
+                  <p>And don't forget about tables in these posts:</p>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Upvotes</th>
+                        <th>Downvotes</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Alice</td>
+                        <td>10</td>
+                        <td>11</td>
+                      </tr>
+                      <tr>
+                        <td>Bob</td>
+                        <td>4</td>
+                        <td>3</td>
+                      </tr>
+                      <tr>
+                        <td>Charlie</td>
+                        <td>7</td>
+                        <td>9</td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td>Totals</td>
+                        <td>21</td>
+                        <td>23</td>
+                      </tr>
+                    </tfoot>
+                  </table>
+          
+                  <p>This is some additional paragraph placeholder content. It's a slightly shorter version of the other highly repetitive body text used throughout.</p>
+                </article>
+          
+                <article class="blog-post">
+                  <h2 class="display-5 link-body-emphasis mb-1">New feature</h2>
+                  <p class="blog-post-meta">December 14, 2020 by <a href="#">Chris</a></p>
+          
+                  <p>This is some additional paragraph placeholder content. It has been written to fill the available space and show how a longer snippet of text affects the surrounding content. We'll repeat it often to keep the demonstration flowing, so be on the lookout for this exact same string of text.</p>
+                  <ul>
+                    <li>First list item</li>
+                    <li>Second list item with a longer description</li>
+                    <li>Third list item to close it out</li>
+                  </ul>
+                  <p>This is some additional paragraph placeholder content. It's a slightly shorter version of the other highly repetitive body text used throughout.</p>
+                </article>
+          
+                <nav class="blog-pagination" aria-label="Pagination">
+                  <a class="btn btn-outline-primary rounded-pill" href="#">Older</a>
+                  <a class="btn btn-outline-secondary rounded-pill disabled">Newer</a>
+                </nav>
+          
+              </div>
+          
+              <div class="col-md-4">
+                <div class="position-sticky" style="top: 2rem;">
+                  <div class="p-4 mb-3 bg-body-tertiary rounded">
+                    <h4 class="fst-italic">120다산콜재단은?</h4>
+                    <p class="mb-0"><b>120다산콜재단은 종합적이고 전문적인 서울시 행정 상담 서비스를 제공하기 위해 설립되었습니다.</b></p>
+                    <p>시민과 서울시를 잇는 행정지식정보의 나들목으로서 서울시의 발전에 기여하고
+                      시민의 생활을 더욱 편리하게 만들고자 노력하겠습니다.</p>
+                  </div>
+          
+                  <div>
+                    <h4 class="fst-italic">최근 글</h4>
+                    <ul class="list-unstyled">
+                      <li>
+                        <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="#">
+                          <svg class="bd-placeholder-img" width="100%" height="96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"></rect></svg>
+                          <div class="col-lg-8">
+                            <h6 class="mb-0">Example blog post title</h6>
+                            <small class="text-body-secondary">January 15, 2023</small>
+                          </div>
+                        </a>
+                      </li>
+                      <li>
+                        <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="#">
+                          <svg class="bd-placeholder-img" width="100%" height="96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"></rect></svg>
+                          <div class="col-lg-8">
+                            <h6 class="mb-0">This is another blog post title</h6>
+                            <small class="text-body-secondary">January 14, 2023</small>
+                          </div>
+                        </a>
+                      </li>
+                      <li>
+                        <a class="d-flex flex-column flex-lg-row gap-3 align-items-start align-items-lg-center py-3 link-body-emphasis text-decoration-none border-top" href="#">
+                          <svg class="bd-placeholder-img" width="100%" height="96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"></rect></svg>
+                          <div class="col-lg-8">
+                            <h6 class="mb-0">Longer blog post title: This one has multiple lines!</h6>
+                            <small class="text-body-secondary">January 13, 2023</small>
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+          
+                  <div class="p-4">
+                    <h4 class="fst-italic">Archives</h4>
+                    <ol class="list-unstyled mb-0">
+                      <li><a href="#">March 2021</a></li>
+                      <li><a href="#">February 2021</a></li>
+                      <li><a href="#">January 2021</a></li>
+                      <li><a href="#">December 2020</a></li>
+                      <li><a href="#">November 2020</a></li>
+                      <li><a href="#">October 2020</a></li>
+                      <li><a href="#">September 2020</a></li>
+                      <li><a href="#">August 2020</a></li>
+                      <li><a href="#">July 2020</a></li>
+                      <li><a href="#">June 2020</a></li>
+                      <li><a href="#">May 2020</a></li>
+                      <li><a href="#">April 2020</a></li>
+                    </ol>
+                  </div>
+          
+                  <div class="p-4">
+                    <h4 class="fst-italic">Elsewhere</h4>
+                    <ol class="list-unstyled">
+                      <li><a href="#">GitHub</a></li>
+                      <li><a href="#">Twitter</a></li>
+                      <li><a href="#">Facebook</a></li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="position-fixed" style="bottom: 5%; right:5%;">
+                <button type="button" class="btn btn-warning btn-circle btn-xl chat-open-btn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">&nbsp;</button>
+            </div>
+          </main>
+        <script>
+            $(".chat-send-button").click(function() {
+              chatSend();
+            });
+            $(".chat-input-text").on("keypress",function(key){
+              if(key.keyCode==13) {
+                chatSend();
+              }
+            });
+            $("#staticBackdrop").on('shown.bs.modal', function () {
+              $(".panel-body").animate({ scrollTop: $('.panel-body').prop("scrollHeight")}, 1);
+              $(".chat-input-text").focus();
+            });
+          function chatSend(){
+            quest = $(".chat-input-text").val();
+            chatAdd(quest, true);
+            $(".chat-input-text").val("");
+            requestPredict(quest);
+          }
+          function requestPredict(quest){
+            ajaxStart();
+            $.ajax({
+              url : "http://127.0.0.1:8081/predict?quest=" + quest,
+              type : "POST",
+              dataType: "json",
+              success : function(data) {
+                chatAdd(data.answer, false);
+              },
+              fail : function(xhr, ajaxSettings, thrownError) 
+              {
+                chatAdd("통신이 원활하지 않습니다.<br> 잠시후 다시 시도해주세요.", false);
+              },
+              error : function(xhr, ajaxSettings, thrownError) 
+              {
+                chatAdd("통신이 원활하지 않습니다.<br> 잠시후 다시 시도해주세요.", false);
+              },
+              complete : function(data) {
+                ajaxStop();
+              }
+            });
+            function ajaxStart(){
+              $(".chat-send-button").attr('disabled', true);
+              $(".chat-input-text").attr('disabled', true);
+              $('#ajax-loading-start').show();
+              $('#ajax-loading-end').hide();
+            }
+            function ajaxStop(){
+              $(".chat-send-button").attr('disabled', false);
+              $(".chat-input-text").attr('disabled', false);
+              $('#ajax-loading-start').hide();
+              $('#ajax-loading-end').show();
+              $(".chat-input-text").focus();
+            }
+          }
+          function chatAdd(message, isUser){
+            chat = ""
+            if(isUser == true){
+              chat += '<div class="chat">'
+                + '<div class="chat-avatar">'
+                + '<a class="avatar avatar-online" data-toggle="tooltip" href="#" data-placement="right" title="" data-original-title="user">'
+                + '<img src="./resource/icon_user.png">'
+            }else {
+              chat += '<div class="chat chat-left">'
+                + '<div class="chat-avatar">'
+                + '<a class="avatar avatar-online" data-toggle="tooltip" href="#" data-placement="left" title="" data-original-title="bot">'
+                + '<img src="./resource/icon_bot.png">';
+            }
+            chat += '<i></i>'
+              + '</a>'
+              + '</div>'
+              + '<div class="chat-body">'
+              + '<div class="chat-content">'
+              + '<p>';
+            chat += message;
+            chat += '</p>'
+              + '</div>'
+              + '</div>'
+              + '</div>';
+            $(".chats").append(chat);
+            $(".panel-body").animate({ scrollTop: $('.panel-body').prop("scrollHeight")}, 10);
+          }
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    </body>
+</html>
