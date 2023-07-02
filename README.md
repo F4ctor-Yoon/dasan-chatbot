@@ -43,7 +43,8 @@
   <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=CSS3&logoColor=white" />
   <img src="https://img.shields.io/badge/bootstrap-7952B3?style=flat&logo=bootstrap&logoColor=white" />
   <img src="https://img.shields.io/badge/javascript-F7DF1E?style=flat&logo=javascript&logoColor=black" />
-  <img src="https://img.shields.io/badge/jquery-0769AD?style=flat&logo=jquery&logoColor=white" />
+  <img src="https://img.shields.io/badge/jquery-0769AD?style=flat&logo=jquery&logoColor=white" /><br>
+  Icons : <a href="https://www.flaticon.com/">flaticon</a>
 </div>
 <hr>
 <img src="https://github.com/F4ctor-Yoon/dasan-chatbot/assets/13534979/ec9dc04e-04f2-43ac-a194-f4071ab4dace" />
