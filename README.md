@@ -13,7 +13,7 @@
     </tr>
     <tr>
       <td>김병수</td>
-      <td>Model Fine-Tuning</td>
+      <td>Fine-Tuning</td>
     </tr>
     <tr>
       <td>홍영택</td>
